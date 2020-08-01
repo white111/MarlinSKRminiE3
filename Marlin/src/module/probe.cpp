@@ -406,6 +406,37 @@ bool Probe::set_deployed(const bool deploy) {
 }
 
 /**
+ * test whether the probe is exist
+ * TRUE means exist.
+ */
+bool Probe::is_exist() {
+  #if ENABLED(BLTOUCH)
+    // Make room for probe to deploy (or stow)
+    // Fix-mounted probe should only raise for deploy
+    // unless PAUSE_BEFORE_DEPLOY_STOW is enabled
+    #if EITHER(FIX_MOUNTED_PROBE, NOZZLE_AS_PROBE) && DISABLED(PAUSE_BEFORE_DEPLOY_STOW)
+      const bool deploy_stow_condition = deploy;
+    #else
+      constexpr bool deploy_stow_condition = true;
+    #endif
+
+    // For beds that fall when Z is powered off only raise for trusted Z
+    #if ENABLED(UNKNOWN_Z_NO_RAISE)
+      const bool unknown_condition = TEST(axis_known_position, Z_AXIS);
+    #else
+      constexpr float unknown_condition = true;
+    #endif
+
+    if (deploy_stow_condition && unknown_condition)
+      do_z_raise(_MAX(Z_CLEARANCE_BETWEEN_PROBES, Z_CLEARANCE_DEPLOY_PROBE));
+
+    return bltouch.is_exist();
+  #else
+    #error "probe.is_exist() has not been implemented except Bltouch"
+  #endif
+}
+
+/**
  * @brief Used by run_z_probe to do a single Z probe move.
  *
  * @param  z        Z destination

@@ -60,6 +60,16 @@ void GcodeSuite::M48() {
 
   if (axis_unhomed_error()) return;
 
+  #if ENABLED(BLTOUCH)
+    if(!probe.is_exist()) {  // probe not exist
+      #if HAS_DISPLAY        // It's means that the Bltouch is not ready
+        ui.status_printf_P(0, PSTR("Bltouch not ready!"));
+      #endif
+      SERIAL_ECHO_MSG("(Optional) Please check whether your printer has Bltouch");
+      return;
+    }
+  #endif
+
   const int8_t verbose_level = parser.byteval('V', 1);
   if (!WITHIN(verbose_level, 0, 4)) {
     SERIAL_ECHOLNPGM("?(V)erbose level implausible (0-4).");

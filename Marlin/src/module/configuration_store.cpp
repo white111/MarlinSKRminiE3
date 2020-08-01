@@ -403,6 +403,10 @@ typedef struct SettingsDataStruct {
     uint8_t case_light_brightness;
   #endif
 
+  #if ENABLED(BABYSTEP_DISPLAY_TOTAL)
+    int16_t babystep_z_steps;
+  #endif
+
 } SettingsData;
 
 //static_assert(sizeof(SettingsData) <= MARLIN_EEPROM_SIZE, "EEPROM too small to contain SettingsData!");
@@ -1334,6 +1338,10 @@ void MarlinSettings::postprocess() {
       EEPROM_WRITE(case_light_brightness);
     #endif
 
+    #if ENABLED(BABYSTEP_DISPLAY_TOTAL)
+      EEPROM_WRITE(babystep.axis_total[BS_AXIS_IND(Z_AXIS)]);
+    #endif
+
     //
     // Validate CRC and Data Size
     //
@@ -2167,6 +2175,10 @@ void MarlinSettings::postprocess() {
         EEPROM_READ(case_light_brightness);
       #endif
 
+      #if ENABLED(BABYSTEP_DISPLAY_TOTAL)
+        EEPROM_READ(babystep.axis_total[BS_AXIS_IND(Z_AXIS)]);
+      #endif
+
       eeprom_error = size_error(eeprom_index - (EEPROM_OFFSET));
       if (eeprom_error) {
         DEBUG_ECHO_START();
@@ -2419,6 +2431,9 @@ void MarlinSettings::reset() {
     TERN_(HAS_FILAMENT_RUNOUT_DISTANCE, runout.set_runout_distance(FILAMENT_RUNOUT_DISTANCE_MM));
   #endif
 
+  #if ENABLED(BABYSTEP_DISPLAY_TOTAL)
+    babystep.axis_total[BS_AXIS_IND(Z_AXIS)] = 0;
+  #endif
   //
   // Tool-change Settings
   //
@@ -3669,6 +3684,14 @@ void MarlinSettings::reset() {
         #if HAS_FILAMENT_RUNOUT_DISTANCE
           , " D", LINEAR_UNIT(runout.runout_distance())
         #endif
+      );
+    #endif
+
+    #if ENABLED(BABYSTEP_DISPLAY_TOTAL)
+      CONFIG_ECHO_HEADING("Babystep total:");
+      CONFIG_ECHO_START();
+      SERIAL_ECHOLNPAIR(
+        "  M290 Z", int(babystep.axis_total[BS_AXIS_IND(Z_AXIS)])
       );
     #endif
   }
