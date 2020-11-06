@@ -128,7 +128,7 @@
 
 // Choose the name from boards.h that matches your setup
 #ifndef MOTHERBOARD
-  #define MOTHERBOARD BOARD_RAMPS_14_EFB
+  #define MOTHERBOARD BOARD_BTT_SKR_V1_4
 #endif
 
 // Name displayed in the LCD "Ready" message and Info menu
@@ -2278,6 +2278,13 @@
 //#define LONGER_LK_TFT28
 
 //
+//480*320,3.5",SPI Display From BTT
+//Normally used in    
+//  LPC1768:  BTT_SKR_V1_4   BTT_SKR_V1_4_Turbpo
+//   
+#define BTT_TFT35_SPIV1_0
+
+//
 // Generic TFT with detailed options
 //
 //#define TFT_GENERIC
@@ -2306,7 +2313,7 @@
  *   root of your SD card, together with the compiled firmware.
  */
 //#define TFT_CLASSIC_UI
-//#define TFT_COLOR_UI
+#define TFT_COLOR_UI
 //#define TFT_LVGL_UI
 
 /**
@@ -2317,7 +2324,7 @@
  *   TFT_ROTATE_270, TFT_ROTATE_270_MIRROR_X, TFT_ROTATE_270_MIRROR_Y,
  *   TFT_MIRROR_X, TFT_MIRROR_Y, TFT_NO_ROTATION
  */
-//#define TFT_ROTATION TFT_NO_ROTATION
+#define TFT_ROTATION TFT_ROTATE_180
 
 //=============================================================================
 //============================  Other Controllers  ============================

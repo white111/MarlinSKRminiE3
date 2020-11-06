@@ -299,7 +299,7 @@
     #define DOGLCD_MOSI                    P1_23
     #define FORCE_SOFT_SPI
     #define LCD_BACKLIGHT_PIN              -1
-
+      
   #elif HAS_SPI_TFT                               // Config for Classic UI (emulated DOGM) and Color UI
     #define TFT_CS_PIN                     P1_22
     #define TFT_A0_PIN                     P1_23
@@ -355,7 +355,23 @@
       #define TFT_BUFFER_SIZE               2400
     #endif
 
-  #elif IS_TFTGLCD_PANEL
+     #ifdef BTT_TFT35_SPIV1_0 
+
+      #undef  TFT_CS_PIN 
+      #undef  TFT_A0_PIN
+      #undef  TFT_BACKLIGHT_PIN 
+      #undef  TFT_RESET_PIN
+
+      #define TFT_CS_PIN                     P0_16
+      #define TFT_A0_PIN                     P1_31
+      
+      #define BTN_ENC                        P0_28  // (58) open-drain
+      #define BTN_EN1                        P3_26  // (31) J3-2 & AUX-4
+      #define BTN_EN2                        P3_25  // (33) J3-4 & AUX-4
+      
+    #endif  
+   
+    #elif IS_TFTGLCD_PANEL
 
     #if ENABLED(TFTGLCD_PANEL_SPI)
       #define TFTGLCD_CS                   P3_26
