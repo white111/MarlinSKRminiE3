@@ -199,6 +199,33 @@
 
 #endif // HAS_WIRED_LCD
 
+
+#ifdef  BTT_UI_SPI
+
+      #define TOUCH_INT_PIN    PC15
+      #define TOUCH_MISO_PIN   PB7
+      #define TOUCH_MOSI_PIN   PB6
+      #define TOUCH_SCK_PIN    PC13
+      #define TOUCH_CS_PIN     PC12
+      
+      #define W25Qxx_CS_PIN    PC14
+      
+      #define SPI4LINLCD_CS0   PA15
+      #define SPI4LINLCD_RS    PB9
+      #define SPI4LINLCD_SCL   PB3
+      #define SPI4LINLCD_SDA   PB5
+
+      #define BEEPER_PIN       PC10
+      #define BTN_ENC          PC11
+      #define BTN_EN1          PB6
+      #define BTN_EN2          PC13
+
+      #ifndef FIL_RUNOUT_PIN
+        #define FIL_RUNOUT_PIN          PB4  // "E0-STOP"
+      #endif
+   
+#endif
+
 //
 // SD Card
 //

@@ -33,7 +33,7 @@
 // SD Connection
 //
 #ifndef SDCARD_CONNECTION
-  #define SDCARD_CONNECTION                  LCD
+  #define SDCARD_CONNECTION                  ONBOARD
 #endif
 
 //
@@ -436,6 +436,30 @@
   #endif // HAS_MARLINUI_U8GLIB
 
 #endif // HAS_WIRED_LCD
+
+
+#ifdef  BTT_UI_SPI
+
+    #define TOUCH_INT_PIN    P1_22
+    #define TOUCH_MISO_PIN   P1_21
+    #define TOUCH_MOSI_PIN   P1_18
+    #define TOUCH_SCK_PIN    P1_20
+    #define TOUCH_CS_PIN     P1_19
+
+
+    #define W25Qxx_CS_PIN    P1_23
+    
+    #define SPI4LINLCD_CS0   P0_16
+    #define SPI4LINLCD_RS    P1_31
+    #define SPI4LINLCD_SCL   P0_15
+    #define SPI4LINLCD_SDA   P0_18
+    #define SPIFLAHCSDIS     P1_23
+
+    #define BEEPER_PIN                        P1_30
+    #ifndef FIL_RUNOUT_PIN
+      #define FIL_RUNOUT_PIN                    PC15  // "E0-STOP"
+    #endif
+#endif
 
 #if HAS_ADC_BUTTONS
   #error "ADC BUTTONS do not work unmodifed on SKR 1.4, The ADC ports cannot take more than 3.3v."

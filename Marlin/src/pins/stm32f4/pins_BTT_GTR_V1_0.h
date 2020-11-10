@@ -408,4 +408,27 @@
 
 #endif // HAS_WIRED_LCD
 
+
+#ifdef  BTT_UI_SPI
+
+    #define TOUCH_INT_PIN    PG6
+    #define TOUCH_MISO_PIN   PG7
+    #define TOUCH_MOSI_PIN   PC10
+    #define TOUCH_SCK_PIN    PG8
+    #define TOUCH_CS_PIN     PA8
+    
+    #define W25Qxx_CS_PIN    PG5
+    
+    #define SPI4LINLCD_CS0   PB12
+    #define SPI4LINLCD_RS    PB10
+    #define SPI4LINLCD_SCL   PB13
+    #define SPI4LINLCD_SDA   PB15
+
+    #define BEEPER_PIN         PC11
+    #ifndef FIL_RUNOUT_PIN
+      #define FIL_RUNOUT_PIN                    PC15  // "E0-STOP"
+    #endif
+   
+#endif
+
 #undef TP
