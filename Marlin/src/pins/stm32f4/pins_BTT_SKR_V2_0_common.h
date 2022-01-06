@@ -269,6 +269,9 @@
   #endif
 #endif // SPINDLE_FEATURE || LASER_FEATURE
 
+#define CONTROLLER_FAN_PIN                  PB5   //FAN1 motor CONTROLLER_FAN
+#define CONTROLLER_FAN2_PIN                 PB6   //FAN2 motor CONTROLLER_FAN
+
 //
 // SPI pins for TMC2130 stepper drivers
 //

@@ -164,6 +164,16 @@ bool BLTouch::stow_proc() {
   return false; // report success to caller
 }
 
+bool BLTouch::is_exist() {
+  // Attempt to DEPLOY, wait for DEPLOY_DELAY or ALARM
+  if (deploy_proc()) return false;
+
+  // Attempt to STOW, wait for STOW_DELAY or ALARM
+  if (stow_proc()) return false;
+
+  return true; // Bltouch is exist
+}
+
 bool BLTouch::status_proc() {
   /**
    * Return a TRUE for "YES, it is DEPLOYED"

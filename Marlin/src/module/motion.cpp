@@ -2103,6 +2103,15 @@ void prepare_line_to_destination() {
 
   void homeaxis(const AxisEnum axis) {
 
+    // for BIQU B1
+    if (axis == X_AXIS && thermalManager.degHotend(0) < 0) { // The hotend temp is negative when hotend type-c line not inserted
+      #if HAS_DISPLAY                                        // It's means that the X-Axis endstop is not ready
+        ui.set_status("X Endstop not ready!");
+      #endif
+      SERIAL_ECHO_MSG("Please check whether the type-C line of the hotend is inserted");
+      return;
+    }
+
     #if ENABLED(FT_MOTION)
       // Disable ft-motion for homing
       struct OnExit {
@@ -2479,6 +2488,11 @@ void set_axis_is_at_home(const AxisEnum axis) {
     current_position[axis] = (axis == Z_AXIS) ? DIFF_TERN(HAS_BED_PROBE, delta_height, probe.offset.z) : base_home_pos(axis);
   #else
     current_position[axis] = base_home_pos(axis);
+    #if ENABLED (BABYSTEP_DISPLAY_TOTAL)
+      if (axis == Z_AXIS) {
+        current_position[axis] -= planner.mm_per_step[axis] * babystep.axis_total[BS_TOTAL_IND(axis)];
+      }
+    #endif
   #endif
 
   /**
@@ -2497,7 +2511,12 @@ void set_axis_is_at_home(const AxisEnum axis) {
 
   TERN_(I2C_POSITION_ENCODERS, I2CPEM.homed(axis));
 
-  TERN_(BABYSTEP_DISPLAY_TOTAL, babystep.reset_total(axis));
+  //TERN_(BABYSTEP_DISPLAY_TOTAL, babystep.reset_total(axis));
+  #if ENABLED (BABYSTEP_DISPLAY_TOTAL)
+    if (axis != Z_AXIS) {
+      babystep.reset_total(axis);
+    }
+  #endif
 
   #if HAS_POSITION_SHIFT
     position_shift[axis] = 0;

@@ -68,6 +68,7 @@ class BLTouch {
 public:
 
   static void init(const bool set_voltage=false);
+  static bool is_exist();
   static bool od_5v_mode;         // Initialized by settings.load, 0 = Open Drain; 1 = 5V Drain
 
   #if HAS_BLTOUCH_HS_MODE
