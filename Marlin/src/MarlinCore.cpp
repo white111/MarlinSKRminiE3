@@ -1371,6 +1371,7 @@ void setup() {
   #if HAS_BED_PROBE
     #if PIN_EXISTS(PROBE_ENABLE)
       OUT_WRITE(PROBE_ENABLE_PIN, LOW); // Disable
+      OUT_WRITE(STRAIN_GAUGE2_EN_PIN, LOW); // Disable
     #endif
     SETUP_RUN(endstops.enable_z_probe(false));
   #endif

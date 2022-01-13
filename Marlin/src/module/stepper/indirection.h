@@ -116,7 +116,8 @@ void reset_stepper_drivers();    // Called by settings.load / settings.reset
   #endif
   #define X2_STEP_INIT() SET_OUTPUT(X2_STEP_PIN)
   #ifndef X2_STEP_WRITE
-    #define X2_STEP_WRITE(STATE) WRITE(X2_STEP_PIN,STATE)
+    // #define X2_STEP_WRITE(STATE) WRITE(X2_STEP_PIN,STATE)
+    #define X2_STEP_WRITE(STATE) do {uint8_t wrte = 0; static int32_t x2 = 0; if (X_DIR_READ()) x2 += X2_STEPS_SCALE; else x2 -= X2_STEPS_SCALE; if (x2 >= X2_STEPS_BASE) { x2 -= X2_STEPS_BASE; wrte = 1; } if (x2 <= -X2_STEPS_BASE) { x2 += X2_STEPS_BASE; wrte = 1; } if (wrte) WRITE(X2_STEP_PIN,STATE); } while(0)
   #endif
   #define X2_STEP_READ() bool(READ(X2_STEP_PIN))
 #endif

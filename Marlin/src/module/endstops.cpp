@@ -388,12 +388,16 @@ void Endstops::not_homing() {
   }
 #endif
 
+extern uint8_t second_probe;
 // Enable / disable endstop z-probe checking
 #if HAS_BED_PROBE
   void Endstops::enable_z_probe(const bool onoff) {
     z_probe_enabled = onoff;
-    #if PIN_EXISTS(PROBE_ENABLE)
-      WRITE(PROBE_ENABLE_PIN, onoff);
+    #if PIN_EXISTS(PROBE_ENABLE)    
+      WRITE(PROBE_ENABLE_PIN, second_probe ? 0 : onoff);
+      WRITE(STRAIN_GAUGE2_EN_PIN, second_probe ? onoff : 0);
+      SERIAL_ECHOLNPGM("T0 = ", second_probe ? 0 : onoff);
+      SERIAL_ECHOLNPGM("T1 = ", second_probe ? onoff : 0);
     #endif
     resync();
   }

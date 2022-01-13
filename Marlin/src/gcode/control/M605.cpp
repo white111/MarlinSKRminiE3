@@ -74,6 +74,7 @@
 
         case DXC_FULL_CONTROL_MODE:
         case DXC_AUTO_PARK_MODE:
+          update_software_endstops(X_AXIS);
           break;
 
         case DXC_DUPLICATION_MODE:
@@ -82,6 +83,8 @@
           if (parser.seen('R')) duplicate_extruder_temp_offset = parser.value_celsius_diff();
           // Always switch back to tool 0
           if (active_extruder != 0) tool_change(0);
+
+          update_software_endstops(X_AXIS);
           break;
 
         case DXC_MIRRORED_MODE: {
@@ -99,6 +102,10 @@
             planner.buffer_line(dest, feedrate_mm_s, 0);
             dest.x += 0.1f;
           }
+          update_software_endstops(X_AXIS);
+          #ifdef EVENT_GCODE_IDEX_AFTER_MODECHANGE
+            process_subcommands_now(F(EVENT_GCODE_IDEX_AFTER_MODECHANGE));
+          #endif
         } return;
 
         default:

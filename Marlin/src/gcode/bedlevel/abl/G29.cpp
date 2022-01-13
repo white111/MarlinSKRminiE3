@@ -899,4 +899,57 @@ G29_TYPE GcodeSuite::G29() {
 
 }
 
+
+uint8_t second_probe = 0;
+
+
+void dualzAlignment(void) {
+
+  uint8_t tmp_extruder = active_extruder;
+  DualXMode tmp_dual_x_mode = dual_x_carriage_mode;
+
+  SERIAL_ECHOPGM("dualzAlignment\r\n");
+
+  // T1
+  hotend_offset[1].z = 0;
+  SERIAL_ECHOPGM("T1\r\n");
+  gcode.process_subcommands_now(F("M605 S0"));
+  gcode.process_subcommands_now(F("T1"));  // 'S' means change tool with no move
+
+  // Safe XY axis & Probe Z axis height
+  // second_probe = 1;
+  // SERIAL_ECHOPGM("probe.probe_at_point\r\n");
+  // const xy_pos_t pos = { Z_SAFE_HOMING_X_POINT, Z_SAFE_HOMING_Y_POINT };
+  // float z = probe.probe_at_point(pos);
+  // probe.stow();
+  // hotend_offset[1].z = z;
+  // SERIAL_ECHOLNPGM("second z:", hotend_offset[1].z);
+  // second_probe = 0;
+
+  // T0  
+  SERIAL_ECHOPGM("G28 X & T0\r\n");
+  gcode.process_subcommands_now(F("T0"));  // 'S' means change tool with no move
+  switch(tmp_dual_x_mode) {
+    case DXC_FULL_CONTROL_MODE:
+      gcode.process_subcommands_now(F("M605 S0"));
+      break;
+    case DXC_AUTO_PARK_MODE:
+      gcode.process_subcommands_now(F("M605 S1"));
+      break;
+    case DXC_DUPLICATION_MODE:
+      gcode.process_subcommands_now(F("M605 S2"));
+      break;
+    case DXC_MIRRORED_MODE:
+      gcode.process_subcommands_now(F("M605 S2"));
+      gcode.process_subcommands_now(F("M605 S3"));
+      break;
+    default:
+      break;
+  }
+  char cmd[20];
+  sprintf_P(cmd, PSTR("T%i"), tmp_extruder);
+  gcode.process_subcommands_now(cmd);
+}
+
+
 #endif // HAS_ABL_NOT_UBL

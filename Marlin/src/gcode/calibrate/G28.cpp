@@ -368,7 +368,7 @@ void GcodeSuite::G28() {
                  && homeI == homeX, && homeJ == homeX, && homeK == homeX
                ),
                LINEAR_AXIS_LIST(
-                 doX = home_all || homeX, doY = home_all || homeY, doZ = home_all || homeZ,
+                 doX = home_all || homeX || homeZ, doY = home_all || homeY, doZ = home_all || homeZ,
                  doI = home_all || homeI, doJ = home_all || homeJ, doK = home_all || homeK
                );
 
@@ -556,4 +556,9 @@ void GcodeSuite::G28() {
       L64xxManager.set_param((L64XX_axis_t)cv, L6470_ABS_POS, stepper.position(L64XX_axis_xref[cv]));
     }
   #endif
+
+  if (doZ) {
+    void dualzAlignment(void);
+    dualzAlignment();
+  }
 }
