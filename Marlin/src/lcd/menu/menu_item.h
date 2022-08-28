@@ -401,7 +401,6 @@ class MenuItem_bool : public MenuEditItemBase {
 #define MENU_ITEM(TYPE, LABEL, V...)                     MENU_ITEM_F(TYPE, GET_TEXT_F(LABEL), ##V)
 
 // Predefined menu item types //
-#define HAS_BACK_ITEM // ToDo: Fix ugly hack for TFT35
 #if HAS_BACK_ITEM
   #define BACK_ITEM_F(FLABEL)                            MENU_ITEM_F(back, FLABEL)
   #define BACK_ITEM(LABEL)                                 MENU_ITEM(back, LABEL)

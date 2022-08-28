@@ -226,6 +226,11 @@
   #define LCD_ST7920_DELAY_2           125
   #define LCD_ST7920_DELAY_3           125
 
+  #if ENABLED(BIGTREETECH_TFT35_E3_V3)
+    #define HAS_BACK_ITEM                1
+  #endif
+
+
 #elif EITHER(ANET_FULL_GRAPHICS_LCD, ANET_FULL_GRAPHICS_LCD_ALT_WIRING)
 
   #define IS_RRD_FG_SC 1
