@@ -35,13 +35,14 @@
 //
 // EEPROM
 //
-#if NO_EEPROM_SELECTED
-  #define SDCARD_EEPROM_EMULATION
-  //#define FLASH_EEPROM_EMULATION
-  //#ifndef MARLIN_EEPROM_SIZE
-  //  #define MARLIN_EEPROM_SIZE 0x800U             // 2K
-  //#endif
+#if EITHER(NO_EEPROM_SELECTED, FLASH_EEPROM_EMULATION)
   #undef NO_EEPROM_SELECTED
+  #ifndef FLASH_EEPROM_EMULATION
+    #define FLASH_EEPROM_EMULATION
+  #endif
+  #define EEPROM_PAGE_SIZE      (0x800UL) // 2K
+  #define EEPROM_START_ADDRESS  (0x8000000UL + (STM32_FLASH_SIZE) * 1024UL - (EEPROM_PAGE_SIZE) * 2UL)
+  #define MARLIN_EEPROM_SIZE    EEPROM_PAGE_SIZE
 #endif
 
 //
@@ -376,6 +377,10 @@
       #define DOGLCD_CS              EXP1_03_PIN
       #define DOGLCD_A0              EXP1_04_PIN
       //#define LCD_BACKLIGHT_PIN           -1
+
+      #define FORCE_SOFT_SPI                      // Use this if default of hardware SPI causes display problems
+                                                  //   results in LCD soft SPI mode 3, SD soft SPI mode 0
+
       #define LCD_RESET_PIN          EXP1_05_PIN  // Must be high or open for LCD to operate normally.
       #if EITHER(FYSETC_MINI_12864_1_2, FYSETC_MINI_12864_2_0)
         #ifndef RGB_LED_R_PIN
