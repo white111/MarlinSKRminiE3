@@ -65,6 +65,10 @@ void GcodeSuite::M125() {
   const float retract = TERN0(HAS_EXTRUDERS, -ABS(parser.axisunitsval('L', E_AXIS, PAUSE_PARK_RETRACT_LENGTH)));
 
   xyz_pos_t park_point = NOZZLE_PARK_POINT;
+  xyz_pos_t park_point2 = NOZZLE_PARK_POINT2;
+
+  if (active_extruder != 0)
+    park_point = park_point2;
 
   // Move to filament change position or given position
   NUM_AXIS_CODE(
