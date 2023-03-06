@@ -401,28 +401,28 @@
    */
 
   // M1 on Driver Expansion Module
-  #define X2_STEP_PIN                EXP2_05_PIN
-  #define X2_DIR_PIN                 EXP2_06_PIN
-  #define X2_ENABLE_PIN              EXP2_04_PIN
+  #define X2_STEP_PIN                EXP2_06_PIN
+  #define X2_DIR_PIN                 EXP2_05_PIN
+  #define X2_ENABLE_PIN              EXP2_07_PIN
   #if !EXP_MOT_USE_EXP2_ONLY
-    #define X2_DIAG_PIN              EXP1_06_PIN
-    #define X2_CS_PIN                EXP1_05_PIN
+    #define X2_DIAG_PIN              EXP1_05_PIN
+    #define X2_CS_PIN                EXP1_06_PIN
     #if HAS_TMC_UART
-      #define X2_SERIAL_TX_PIN       EXP1_05_PIN
-      #define X2_SERIAL_RX_PIN       EXP1_05_PIN
+      #define X2_SERIAL_TX_PIN       EXP1_06_PIN
+      #define X2_SERIAL_RX_PIN       EXP1_06_PIN
     #endif
   #endif
 
   // M2 on Driver Expansion Module
-  #define Z2_STEP_PIN                EXP2_08_PIN
-  #define Z2_DIR_PIN                 EXP2_07_PIN
+  #define Z2_STEP_PIN                EXP2_03_PIN
+  #define Z2_DIR_PIN                 EXP2_04_PIN
   #if !EXP_MOT_USE_EXP2_ONLY
-    #define Z2_ENABLE_PIN            EXP1_03_PIN
-    #define Z2_DIAG_PIN              EXP1_08_PIN
-    #define Z2_CS_PIN                EXP1_07_PIN
+    #define Z2_ENABLE_PIN            EXP1_08_PIN
+    #define Z2_DIAG_PIN              EXP1_03_PIN
+    #define Z2_CS_PIN                EXP1_04_PIN
     #if HAS_TMC_UART
-      #define Z2_SERIAL_TX_PIN       EXP1_07_PIN
-      #define Z2_SERIAL_RX_PIN       EXP1_07_PIN
+      #define Z2_SERIAL_TX_PIN       EXP1_04_PIN
+      #define Z2_SERIAL_RX_PIN       EXP1_04_PIN
     #endif
   #else
     #define E3_ENABLE_PIN            EXP2_07_PIN
