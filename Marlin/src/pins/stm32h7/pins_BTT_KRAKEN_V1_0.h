@@ -228,9 +228,9 @@
 #define FAN2_PIN                            PA2   // Fan2
 #define FAN3_PIN                            PA3   // Fan3
 #define FAN4_PIN                            PA4   // Fan4
-#define FAN5_PIN                            PA5   // Fan5
-#define FAN6_PIN                            PA6   // 4 wire Fan6
-#define FAN7_PIN                            PE8   // 4 wire Fan7
+// #define FAN5_PIN                            PA5   // Fan5, same channel with fan0
+// #define FAN6_PIN                            PA6   // 4 wire Fan6
+// #define FAN7_PIN                            PE8   // 4 wire Fan7
 
 //
 // Power Supply Control
@@ -310,14 +310,14 @@
   #ifndef SD_DETECT_STATE
     #define SD_DETECT_STATE HIGH
   #elif SD_DETECT_STATE == LOW
-    #error "BOARD_BTT_OCTOPUS_MAX_EZ onboard SD requires SD_DETECT_STATE set to HIGH."
+    #error "BOARD_BTT_KRAKEN_V1_0 onboard SD requires SD_DETECT_STATE set to HIGH."
   #endif
   #define SDSS                              PB12
   #define SD_SS_PIN                         SDSS
-  #define SD_SCK_PIN                        PE12
-  #define SD_MISO_PIN                       PE13
-  #define SD_MOSI_PIN                       PE14
-  #define SD_DETECT_PIN                     PB13
+  #define SD_SCK_PIN                        PB13
+  #define SD_MISO_PIN                       PB14
+  #define SD_MOSI_PIN                       PB15
+  #define SD_DETECT_PIN                     PE15
   #define SOFTWARE_SPI
 #elif SD_CONNECTION_IS(LCD)
   #define SDSS                       EXP2_04_PIN
@@ -331,40 +331,168 @@
   #error "CUSTOM_CABLE is not a supported SDCARD_CONNECTION for this board"
 #endif
 
+#if ENABLED(BTT_MOTOR_EXPANSION)
+  /**
+   *         ------                  ------
+   * M3DIAG | 1  2 | M3RX     M3STP | 1  2 | M3DIR
+   * M2DIAG | 3  4 | M2RX     M2STP | 3  4 | M2DIR
+   * M1DIAG   5  6 | M1RX     M1DIR   5  6 | M1STP
+   *   M3EN | 7  8 | M2EN      M1EN | 7  8 | --
+   *    GND | 9 10 | --         GND | 9 10 | --
+   *        ------                   ------
+   *         EXP1                     EXP2
+   */
+
+  // M1 on Driver Expansion Module
+  #define E4_STEP_PIN                EXP2_06_PIN
+  #define E4_DIR_PIN                 EXP2_05_PIN
+  #define E4_ENABLE_PIN              EXP2_07_PIN
+  #define E4_DIAG_PIN                EXP1_05_PIN
+  #define E4_CS_PIN                  EXP1_06_PIN
+  #if HAS_TMC_UART
+    #define E4_SERIAL_TX_PIN         EXP1_06_PIN
+    #define E4_SERIAL_RX_PIN    E4_SERIAL_TX_PIN
+  #endif
+
+  // M2 on Driver Expansion Module
+  #define E5_STEP_PIN                EXP2_03_PIN
+  #define E5_DIR_PIN                 EXP2_04_PIN
+  #define E5_ENABLE_PIN              EXP1_08_PIN
+  #define E5_DIAG_PIN                EXP1_03_PIN
+  #define E5_CS_PIN                  EXP1_04_PIN
+  #if HAS_TMC_UART
+    #define E5_SERIAL_TX_PIN         EXP1_04_PIN
+    #define E5_SERIAL_RX_PIN    E5_SERIAL_TX_PIN
+  #endif
+
+  // M3 on Driver Expansion Module
+  #define E6_STEP_PIN                EXP2_01_PIN
+  #define E6_DIR_PIN                 EXP2_02_PIN
+  #define E6_ENABLE_PIN              EXP1_07_PIN
+  #define E6_DIAG_PIN                EXP1_01_PIN
+  #define E6_CS_PIN                  EXP1_02_PIN
+  #if HAS_TMC_UART
+    #define E6_SERIAL_TX_PIN         EXP1_02_PIN
+    #define E6_SERIAL_RX_PIN    E6_SERIAL_TX_PIN
+  #endif
+
+#endif // BTT_MOTOR_EXPANSION
+
 //
 // LCDs and Controllers
 //
+#if IS_TFTGLCD_PANEL
 
-#if ENABLED(BTT_MINI_12864)                       // BTT Mini 12864 V2.0 connected via 18-pin FPC cable
+  #if ENABLED(TFTGLCD_PANEL_SPI)
+    #define TFTGLCD_CS               EXP2_03_PIN
+  #endif
+
+#elif HAS_DWIN_E3V2 || IS_DWIN_MARLINUI
+  /**
+   *        ------                 ------            ---
+   *       | 1  2 |               | 1  2 |            1 |
+   *       | 3  4 |            RX | 3  4 | TX       | 2 | RX
+   *   ENT   5  6 | BEEP      ENT   5  6 | BEEP     | 3 | TX
+   *     B | 7  8 | A           B | 7  8 | A        | 4 |
+   *   GND | 9 10 | VCC       GND | 9 10 | VCC        5 |
+   *        ------                 ------            ---
+   *         EXP1                   DWIN             TFT
+   *
+   * DWIN pins are labeled as printed on DWIN PCB. GND, VCC, A, B, ENT & BEEP can be connected in the same
+   * orientation as the existing plug/DWIN to EXP1. TX/RX need to be connected to the TFT port, with TX->RX, RX->TX.
+   */
+
+  #ifndef NO_CONTROLLER_CUSTOM_WIRING_WARNING
+    #error "CAUTION! Ender-3 V2 display requires a custom cable. See 'pins_BTT_OCTOPUS_V1_common.h' for details. (Define NO_CONTROLLER_CUSTOM_WIRING_WARNING to suppress this warning.)"
+  #endif
+
+  #define BEEPER_PIN                 EXP1_06_PIN
+  #define BTN_EN1                    EXP1_08_PIN
+  #define BTN_EN2                    EXP1_07_PIN
+  #define BTN_ENC                    EXP1_05_PIN
+
+#elif HAS_WIRED_LCD
 
   #define BEEPER_PIN                 EXP1_01_PIN
   #define BTN_ENC                    EXP1_02_PIN
-  #define LCD_PINS_RS                EXP1_04_PIN
+
+  #if ENABLED(CR10_STOCKDISPLAY)
+
+    #define LCD_PINS_RS              EXP1_07_PIN
+
+    #define BTN_EN1                  EXP1_03_PIN
+    #define BTN_EN2                  EXP1_05_PIN
+
+    #define LCD_PINS_EN              EXP1_08_PIN
+    #define LCD_PINS_D4              EXP1_06_PIN
+
+  #else
+
+    #define LCD_PINS_RS              EXP1_04_PIN
+
+    #define BTN_EN1                  EXP2_03_PIN
+    #define BTN_EN2                  EXP2_05_PIN
+
+    #define LCD_PINS_EN              EXP1_03_PIN
+    #define LCD_PINS_D4              EXP1_05_PIN
+
+    #if ENABLED(FYSETC_MINI_12864)
+      #define DOGLCD_CS              EXP1_03_PIN
+      #define DOGLCD_A0              EXP1_04_PIN
+      //#define LCD_BACKLIGHT_PIN           -1
+      #define LCD_RESET_PIN          EXP1_05_PIN  // Must be high or open for LCD to operate normally.
+      #if ANY(FYSETC_MINI_12864_1_2, FYSETC_MINI_12864_2_0)
+        #ifndef RGB_LED_R_PIN
+          #define RGB_LED_R_PIN      EXP1_06_PIN
+        #endif
+        #ifndef RGB_LED_G_PIN
+          #define RGB_LED_G_PIN      EXP1_07_PIN
+        #endif
+        #ifndef RGB_LED_B_PIN
+          #define RGB_LED_B_PIN      EXP1_08_PIN
+        #endif
+      #elif ENABLED(FYSETC_MINI_12864_2_1)
+        #define NEOPIXEL_PIN         EXP1_06_PIN
+      #endif
+    #endif // !FYSETC_MINI_12864
+
+    #if IS_ULTIPANEL
+      #define LCD_PINS_D5            EXP1_06_PIN
+      #define LCD_PINS_D6            EXP1_07_PIN
+      #define LCD_PINS_D7            EXP1_08_PIN
+
+      #if ENABLED(REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER)
+        #define BTN_ENC_EN           LCD_PINS_D7  // Detect the presence of the encoder
+      #endif
+
+    #endif
+
+  #endif
+#endif // HAS_WIRED_LCD
+
+// Alter timing for graphical display
+#if IS_U8GLIB_ST7920
+  #define BOARD_ST7920_DELAY_1               120
+  #define BOARD_ST7920_DELAY_2                80
+  #define BOARD_ST7920_DELAY_3               580
+#endif
+
+#if HAS_SPI_TFT
+  #define TFT_CS_PIN                 EXP2_04_PIN
+  #define TFT_A0_PIN                 EXP2_07_PIN
+  #define TFT_SCK_PIN                EXP2_02_PIN
+  #define TFT_MISO_PIN               EXP2_01_PIN
+  #define TFT_MOSI_PIN               EXP2_06_PIN
+
+  #define TOUCH_INT_PIN              EXP1_07_PIN
+  #define TOUCH_MISO_PIN             EXP1_06_PIN
+  #define TOUCH_MOSI_PIN             EXP1_03_PIN
+  #define TOUCH_SCK_PIN              EXP1_05_PIN
+  #define TOUCH_CS_PIN               EXP1_04_PIN
 
   #define BTN_EN1                    EXP2_03_PIN
   #define BTN_EN2                    EXP2_05_PIN
-
-  #define LCD_PINS_EN                EXP1_03_PIN
-  #define LCD_PINS_D4                EXP1_05_PIN
-  #define LCD_PINS_D5                EXP1_06_PIN
-  #define LCD_PINS_D6                EXP1_07_PIN
-  #define LCD_PINS_D7                EXP1_08_PIN
-
-  #define DOGLCD_CS                  EXP1_03_PIN
-  #define DOGLCD_A0                  EXP1_04_PIN
-  #define DOGLCD_SCK                 EXP2_02_PIN
-  #define DOGLCD_MOSI                EXP2_06_PIN
-
-  #define SOFTWARE_SPI
-  #define FORCE_SOFT_SPI                          // Use this if Hardware SPI causes display problems.
-                                                  // Results in LCD Software SPI mode 3, SD Software SPI mode 0.
-
-  //#define LCD_BACKLIGHT_PIN               -1
-  #define LCD_RESET_PIN              EXP1_05_PIN  // Must be high or open for LCD to operate normally.
-  #define NEOPIXEL_PIN               EXP1_06_PIN
-
-#elif HAS_WIRED_LCD
-  #error "Only BTT_MINI_12864 (BTT Mini 12864 V2.0 with FPC cable) is currently supported on the BIGTREE_OCTOPUS_MAX_EZ."
+  #define BTN_ENC                    EXP1_02_PIN
 #endif
 
 //
