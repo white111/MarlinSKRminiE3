@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 #pragma once
@@ -24,16 +24,14 @@
 #include "env_validate.h"
 
 #if HOTENDS > 1 || E_STEPPERS > 1
-  #error "Artillery Ruby only supports 1 hotend / E stepper."
+  #error "Artillery Ruby supports up to 1 hotends / E-steppers."
 #endif
 
 #define BOARD_INFO_NAME      "Artillery Ruby"
 
-#if NO_EEPROM_SELECTED
-  #define FLASH_EEPROM_EMULATION
-  //#define I2C_EEPROM
-#endif
-//#define E2END                            0xFFF  // 4K
+#define FLASH_EEPROM_EMULATION
+//#define I2C_EEPROM
+//#define E2END                            0xFFF  // 4KB
 
 #define HAL_TIMER_RATE                     F_CPU
 
@@ -157,7 +155,7 @@
       #define NEOPIXEL_PIN                  PB9
     #endif
 
-    #define LCD_CONTRAST_INIT                255
+    #define DEFAULT_LCD_CONTRAST             255
   #else
     #define LCD_PINS_RS                     PC15
     #define LCD_PINS_ENABLE                 PB6

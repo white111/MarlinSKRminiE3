@@ -28,7 +28,7 @@
 #include "env_validate.h"
 
 #if HOTENDS > 2 || E_STEPPERS > 2
-  #error "Eryone Ery32 mini supports up to 2 hotends / E steppers."
+  #error "Eryone Ery32 mini supports up to 2 hotends / E-steppers. Comment out this line to continue."
 #endif
 
 #ifndef BOARD_INFO_NAME
@@ -38,10 +38,11 @@
 //#define DISABLE_DEBUG
 #define DISABLE_JTAG
 //#define ENABLE_SPI3
+#define FLASH_EEPROM_EMULATION
+#define FAN_SOFT_PWM
 
-#if EITHER(NO_EEPROM_SELECTED, FLASH_EEPROM_EMULATION)
-  #define FLASH_EEPROM_EMULATION
-  #define EEPROM_PAGE_SIZE     (0x800U)           // 2K
+#if ENABLED(FLASH_EEPROM_EMULATION)
+  #define EEPROM_PAGE_SIZE     (0x800U)           // 2KB
   #define EEPROM_START_ADDRESS (0x8000000UL + (STM32_FLASH_SIZE) * 1024UL - (EEPROM_PAGE_SIZE) * 2UL)
   #define MARLIN_EEPROM_SIZE (EEPROM_PAGE_SIZE)
 #endif
@@ -116,8 +117,6 @@
     #define FAN_PIN                         PB5
   #endif
 #endif
-
-#define FAN_SOFT_PWM_REQUIRED
 
 //
 // Misc. Functions

@@ -45,7 +45,7 @@
   #if PIN_EXISTS(MT_DET_2)
     bool mt_det2_sta;
   #endif
-  #if X_HOME_DIR
+  #if HAS_X_MIN || HAS_X_MAX
     bool endstopx1_sta;
   #else
     constexpr static bool endstopx1_sta = true;
@@ -55,7 +55,7 @@
   #else
     constexpr static bool endstopx2_sta = true;
   #endif
-  #if HAS_Y_AXIS && Y_HOME_DIR
+  #if HAS_Y_MIN || HAS_Y_MAX
     bool endstopy1_sta;
   #else
     constexpr static bool endstopy1_sta = true;
@@ -65,7 +65,7 @@
   #else
     constexpr static bool endstopy2_sta = true;
   #endif
-  #if HAS_Z_AXIS && Z_HOME_DIR
+  #if HAS_Z_MIN || HAS_Z_MAX
     bool endstopz1_sta;
   #else
     constexpr static bool endstopz1_sta = true;
@@ -160,8 +160,6 @@
     #endif
   }
 
-  #include "../../../libs/buzzer.h"
-
   void init_test_gpio() {
     endstops.init();
 
@@ -203,7 +201,12 @@
     #endif
   }
 
-  void mks_test_beeper() { buzzer.click(100); }
+  void mks_test_beeper() {
+    WRITE(BEEPER_PIN, HIGH);
+    delay(100);
+    WRITE(BEEPER_PIN, LOW);
+    delay(100);
+  }
 
   #if ENABLED(SDSUPPORT)
 
@@ -711,16 +714,12 @@ void disp_assets_update() {
 }
 
 void disp_assets_update_progress(FSTR_P const fmsg) {
-  #ifdef __AVR__
-    static constexpr int buflen = 30;
-    char buf[buflen];
-    memset(buf, ' ', buflen);
-    strncpy_P(buf, FTOP(fmsg), buflen - 1);
-    buf[buflen - 1] = '\0';
-    disp_string(100, 165, buf, 0xFFFF, 0x0000);
-  #else
-    disp_string(100, 165, FTOP(fmsg), 0xFFFF, 0x0000);
-  #endif
+  static constexpr int buflen = 30;
+  char buf[buflen];
+  memset(buf, ' ', buflen);
+  strncpy_P(buf, FTOP(fmsg), buflen - 1);
+  buf[buflen - 1] = '\0';
+  disp_string(100, 165, buf, 0xFFFF, 0x0000);
 }
 
 #if BOTH(MKS_TEST, SDSUPPORT)
